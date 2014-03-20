@@ -87,6 +87,7 @@ echo "--"
 echo "usage is $0 <version_of_the_kernel_archive>"
 echo "example: is $0 3.1.1"
 echo "--"
+echo "--"
 
 fi
 
