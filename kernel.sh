@@ -11,6 +11,7 @@ AWKC=/usr/bin/awk
 ECHOC=/usr/bin/echo
 LILOC=/sbin/lilo
 GPGC=/usr/bin/gpg
+UNXZC=/usr/bin/unxz
 
 
 if [ ! -z "$1" ]; then
@@ -28,11 +29,12 @@ if [ ! -z "$1" ]; then
 	$ECHOC "done fetching kernel source"
 	
 	$ECHOC "verifying kernel source integrity w/ $GPGC --verify linux-$RELEASE.tar.sign"
+	$UNXZC linux-$RELEASE.tar.xz
 	$GPGC --verify linux-$RELEASE.tar.sign
 	$ECHOC "done verifying kernel source integrity"
 	
-	$ECHOC "extracting kernel source w/ $TARC -Jxf linux-$RELEASE.tar.xz" 
-	$TARC -Jxf linux-$RELEASE.tar.xz 
+	$ECHOC "extracting kernel source w/ $TARC -xf linux-$RELEASE.tar" 
+	$TARC -xf linux-$RELEASE.tar 
 	$ECHOC "done fetching kernel source"
 	
 	cd linux-$RELEASE
@@ -47,7 +49,9 @@ if [ ! -z "$1" ]; then
 		1)
 		$CPC /home/.stuff/.config ./;;	
 		*)
-		$ECHOC "you must choose between option 0 and 1";;
+		$ECHOC "you must choose between option 0 and 1"
+		exit
+		;;
 	esac
 
 	$ECHOC "$MAKEC oldconfig"
@@ -86,7 +90,6 @@ else
 echo "--"
 echo "usage is $0 <version_of_the_kernel_archive>"
 echo "example: is $0 3.1.1"
-echo "--"
 echo "--"
 
 fi
