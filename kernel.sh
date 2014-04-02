@@ -4,6 +4,7 @@ ZCATC=/usr/bin/zcat
 MAKEC=/usr/bin/make
 MKINITRDC=/sbin/mkinitrd
 TARC=/usr/bin/tar
+RSYNCC=/usr/bin/rsync
 WGETC=/usr/bin/wget
 LNC=/usr/bin/ln
 CPC=/usr/bin/cp
@@ -12,22 +13,37 @@ ECHOC=/usr/bin/echo
 LILOC=/sbin/lilo
 GPGC=/usr/bin/gpg
 UNXZC=/usr/bin/unxz
-
+F=https
 
 if [ ! -z "$1" ]; then
 
 	RELEASE=$1
-	FETCH=ftp://ftp.kernel.org/pub/linux/kernel/v3.x/linux-$RELEASE.tar.xz
-	FETCHS=ftp://ftp.kernel.org/pub/linux/kernel/v3.x/linux-$RELEASE.tar.sign
 
-	$ECHOC "fetching kernel checksum w/ $WGETC -nv $FETCHS"
-	$WGETC -nv $FETCHS
-	$ECHOC "done fetching kernel checksum"
+	if [ $F == rsync ]; then
+	FETCH=rsync://rsync.kernel.org/pub/linux/kernel/v3.x/linux-$RELEASE.tar.xz
+	FETCHS=rsync://rsync.kernel.org/pub/linux/kernel/v3.x/linux-$RELEASE.tar.sign
+		$ECHOC "fetching kernel checksum w/ $RSYNCC -av $FETCHS"
+		$RSYNCC -av $FETCHS ./
+		$ECHOC "done fetching kernel checksum"
 	
-	$ECHOC "fetching kernel source w/ $WGETC -nv $FETCH"
-	$WGETC -nv $FETCH
-	$ECHOC "done fetching kernel source"
+		$ECHOC "fetching kernel source w/ $RSYNCC -av $FETCH"
+		$RSYNCC -av $FETCH ./
+		$ECHOC "done fetching kernel source"
+	fi
 	
+	
+	if [ $F == https ]; then
+	FETCH=https://www.kernel.org/pub/linux/kernel/v3.x/linux-$RELEASE.tar.xz
+	FETCHS=https://www.kernel.org/pub/linux/kernel/v3.x/linux-$RELEASE.tar.sign
+		$ECHOC "fetching kernel checksum w/ $WGETC -nv $FETCHS"
+		$WGETC -nv $FETCHS
+		$ECHOC "done fetching kernel checksum"
+	
+		$ECHOC "fetching kernel source w/ $WGETC -nv $FETCH"
+		$WGETC -nv $FETCH
+		$ECHOC "done fetching kernel source"
+	fi
+
 	$ECHOC "verifying kernel source integrity w/ $GPGC --verify linux-$RELEASE.tar.sign"
 	$UNXZC linux-$RELEASE.tar.xz
 	$GPGC --verify linux-$RELEASE.tar.sign
