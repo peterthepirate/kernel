@@ -103,10 +103,10 @@ if [ ! -z "$1" ]; then
 
 else
 
-echo "--"
-echo "usage is $0 <version_of_the_kernel_archive>"
-echo "example: is $0 3.1.1"
-echo "--"
+$ECHOC "--"
+$ECHOC "usage is $0 <version_of_the_kernel_archive>"
+$ECHOC "example: is $0 3.1.1"
+$ECHOC "--"
 
 fi
 
