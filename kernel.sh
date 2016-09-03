@@ -20,8 +20,8 @@ if [ ! -z "$1" ]; then
 	RELEASE=$1
 
 	if [ $F == rsync ]; then
-	FETCH=rsync://rsync.kernel.org/pub/linux/kernel/v3.x/linux-$RELEASE.tar.xz
-	FETCHS=rsync://rsync.kernel.org/pub/linux/kernel/v3.x/linux-$RELEASE.tar.sign
+	FETCH=rsync://rsync.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.xz
+	FETCHS=rsync://rsync.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.sign
 		$ECHOC "fetching kernel checksum w/ $RSYNCC -av $FETCHS"
 		$RSYNCC -av $FETCHS ./
 		$ECHOC "done fetching kernel checksum"
@@ -33,8 +33,8 @@ if [ ! -z "$1" ]; then
 	
 	
 	if [ $F == https ]; then
-	FETCH=https://www.kernel.org/pub/linux/kernel/v3.x/linux-$RELEASE.tar.xz
-	FETCHS=https://www.kernel.org/pub/linux/kernel/v3.x/linux-$RELEASE.tar.sign
+	FETCH=https://www.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.xz
+	FETCHS=https://www.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.sign
 		$ECHOC "fetching kernel checksum w/ $WGETC -nv $FETCHS"
 		$WGETC -nv $FETCHS
 		$ECHOC "done fetching kernel checksum"
@@ -89,7 +89,7 @@ if [ ! -z "$1" ]; then
 	$CPC .config /boot/config-$RELEASE
 	
 	$ECHOC "$MKINITRDC -c -k $RELEASE-smp -m ext4"
-	$MKINITRDC -c -k $RELEASE-smp -m ext4 -o /boot/initrd.gz.$RELEASE
+	$MKINITRDC -c -k $RELEASE-smp -f ext4 -r /dev/sda1 -m xhci-pci:ohci-pci:ehci-pci:xhci-hcd:uhci-hcd:ehci-hcd:hid:usbhid:i2c-hid:hid_generic:hid-cherry:hid-logitech:hid-logitech-dj:hid-logitech-hidpp:hid-lenovo:hid-microsoft:hid_multitouch:jbd2:mbcache:ext4 -u -o /boot/initrd.gz.$RELEASE
 
 	$ECHOC "append the file lilo.conf"
 	$ECHOC "image = /boot/vmlinuz-$RELEASE
@@ -105,7 +105,7 @@ else
 
 $ECHOC "--"
 $ECHOC "usage is $0 <version_of_the_kernel_archive>"
-$ECHOC "example: is $0 3.1.1"
+$ECHOC "example: is $0 4.4.14"
 $ECHOC "--"
 
 fi
