@@ -19,39 +19,47 @@ if [ ! -z "$1" ]; then
 
 	RELEASE=$1
 
-	if [ $F == rsync ]; then
-	FETCH=rsync://rsync.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.xz
-	FETCHS=rsync://rsync.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.sign
-		$ECHOC "fetching kernel checksum w/ $RSYNCC -av $FETCHS"
-		$RSYNCC -av $FETCHS ./
-		$ECHOC "done fetching kernel checksum"
+	if [ ! -f "linux-$RELEASE.tar" ]; then
 	
-		$ECHOC "fetching kernel source w/ $RSYNCC -av $FETCH"
-		$RSYNCC -av $FETCH ./
-		$ECHOC "done fetching kernel source"
-	fi
-	
-	
-	if [ $F == https ]; then
-	FETCH=https://www.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.xz
-	FETCHS=https://www.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.sign
-		$ECHOC "fetching kernel checksum w/ $WGETC -nv $FETCHS"
-		$WGETC -nv $FETCHS
-		$ECHOC "done fetching kernel checksum"
-	
-		$ECHOC "fetching kernel source w/ $WGETC -nv $FETCH"
-		$WGETC -nv $FETCH
-		$ECHOC "done fetching kernel source"
-	fi
+		if [ $F == rsync ]; then
+		FETCH=rsync://rsync.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.xz
+		FETCHS=rsync://rsync.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.sign
+			$ECHOC "fetching kernel checksum w/ $RSYNCC -av $FETCHS"
+			$RSYNCC -av $FETCHS ./
+			$ECHOC "done fetching kernel checksum"
+		
+			$ECHOC "fetching kernel source w/ $RSYNCC -av $FETCH"
+			$RSYNCC -av $FETCH ./
+			$ECHOC "done fetching kernel source"
+		fi
+		
+		
+		if [ $F == https ]; then
+		FETCH=https://www.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.xz
+		FETCHS=https://www.kernel.org/pub/linux/kernel/v4.x/linux-$RELEASE.tar.sign
+			$ECHOC "fetching kernel checksum w/ $WGETC -nv $FETCHS"
+			$WGETC -nv $FETCHS
+			$ECHOC "done fetching kernel checksum"
+		
+			$ECHOC "fetching kernel source w/ $WGETC -nv $FETCH"
+			$WGETC -nv $FETCH
+			$ECHOC "done fetching kernel source"
+		fi
 
-	$ECHOC "verifying kernel source integrity w/ $GPGC --verify linux-$RELEASE.tar.sign"
-	$UNXZC linux-$RELEASE.tar.xz
-	$GPGC --verify linux-$RELEASE.tar.sign
-	$ECHOC "done verifying kernel source integrity"
-	
-	$ECHOC "extracting kernel source w/ $TARC -xf linux-$RELEASE.tar" 
-	$TARC -xf linux-$RELEASE.tar 
-	$ECHOC "done fetching kernel source"
+			$ECHOC "verifying kernel source integrity w/ $GPGC --verify linux-$RELEASE.tar.sign"
+			$UNXZC linux-$RELEASE.tar.xz
+			$GPGC --verify linux-$RELEASE.tar.sign
+			$ECHOC "done verifying kernel source integrity"
+
+			$ECHOC "extracting kernel source w/ $TARC -xf linux-$RELEASE.tar" 
+			$TARC -xf linux-$RELEASE.tar 
+			$ECHOC "done fetching kernel source"
+
+	else
+		$ECHOC "extracting kernel source w/ $TARC -xf linux-$RELEASE.tar" 
+		$TARC -xf linux-$RELEASE.tar 
+		$ECHOC "done fetching kernel source"
+	fi		
 	
 	cd linux-$RELEASE
 
