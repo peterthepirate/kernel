@@ -1,5 +1,7 @@
 #!/bin/sh
 
+LNC=/usr/bin/ln
+RMC=/usr/bin/rm
 ZCATC=/usr/bin/zcat
 MAKEC=/usr/bin/make
 MKINITRDC=/sbin/mkinitrd
@@ -105,6 +107,9 @@ if [ ! -z "$1" ]; then
 		root = /dev/sda1
 		label = s$RELEASE
 		read-only" >> /etc/lilo.conf
+
+	$RMC /usr/src/linux
+	$LNC -s /usr/src/linux-$RELEASE linux
 	
 	$ECHOC "$LILOC -v"
 	$LILOC -v
