@@ -1,6 +1,5 @@
 #!/bin/sh
 
-LNC=/usr/bin/ln
 RMC=/usr/bin/rm
 ZCATC=/usr/bin/zcat
 MAKEC=/usr/bin/make
@@ -98,8 +97,8 @@ if [ ! -z "$1" ]; then
 	$ECHOC "$CPC .config /boot/config-$RELEASE"
 	$CPC .config /boot/config-$RELEASE
 	
-	$ECHOC "$MKINITRDC -c -k $RELEASE-smp -m ext4"
-	$MKINITRDC -c -k $RELEASE-smp -f ext4 -r /dev/sda1 -m xhci-pci:ohci-pci:ehci-pci:xhci-hcd:uhci-hcd:ehci-hcd:hid:usbhid:i2c-hid:hid_generic:hid-cherry:hid-logitech:hid-logitech-dj:hid-logitech-hidpp:hid-lenovo:hid-microsoft:hid_multitouch:jbd2:mbcache:ext4 -u -o /boot/initrd.gz.$RELEASE
+	$ECHOC "$(/usr/share/mkinitrd/mkinitrd_command_generator.sh -k ${RELEASE}-smp -r -a "-o /boot/initrd.gz.${RELEASE}")"
+	$(/usr/share/mkinitrd/mkinitrd_command_generator.sh -k ${RELEASE}-smp -r -a "-o /boot/initrd.gz.${RELEASE}")
 
 	$ECHOC "append the file lilo.conf"
 	$ECHOC "image = /boot/vmlinuz-$RELEASE
@@ -108,8 +107,10 @@ if [ ! -z "$1" ]; then
 		label = s$RELEASE
 		read-only" >> /etc/lilo.conf
 
-	$RMC /usr/src/linux
-	$LNC -s /usr/src/linux-$RELEASE linux
+	$ECHOC "$LNC -s /usr/src/linux-$RELEASE /usr/src/linux"
+	cd /usr/src
+	$RMC linux
+	$LNC -s linux-$RELEASE linux
 	
 	$ECHOC "$LILOC -v"
 	$LILOC -v
